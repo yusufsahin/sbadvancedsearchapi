@@ -3,19 +3,19 @@ package com.example.demo.controller;
 
 import com.example.demo.dao.ProjectRepository;
 import com.example.demo.dao.model.Project;
-import com.example.demo.dao.model.User;
 import com.example.demo.util.dao.ProjectSpecification;
 import com.example.demo.util.dao.common.GenericSpecificationsBuilder;
 import com.example.demo.web.CriteriaParser;
+import com.sipios.springsearch.anotation.SearchSpec;
 import lombok.AllArgsConstructor;
 import lombok.NoArgsConstructor;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
-
 import org.springframework.data.jpa.domain.Specification;
 import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Component;
 import org.springframework.web.bind.annotation.*;
+import com.sipios.springsearch.anotation.SearchSpec;
 
 import java.util.List;
 
@@ -44,9 +44,20 @@ public class ProjectController {
     }
     @GetMapping("/spec")
     @ResponseBody
+
     public List<Project> findAllByAdvPredicate(@RequestParam String search) {
         Specification<Project> spec = resolveSpecification(search);
         return projectRepository.findAll(spec);
+    }
+
+
+    @GetMapping("/sapios")
+    @ResponseBody
+    public List<Project> findAllByAdvPredicate(@SearchSpec Specification<Project> specs ) {
+        //Specification<Project> spec = resolveSpecification(search);
+
+        //carRepository.findAll(Specification.where(specs))
+        return projectRepository.findAll(Specification.where(specs));
     }
     private Specification<Project> resolveSpecification(String searchParameters) {
         CriteriaParser parser = new CriteriaParser();
